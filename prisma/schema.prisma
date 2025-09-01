@@ -7,6 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+  /**
+   * User model stores the app's users
+   */
+
 model User {
   id        String   @id @default(cuid())
   email     String?  @unique
@@ -16,6 +20,11 @@ model User {
   sessions Session[]
   createdAt DateTime @default(now())
 }
+
+  /**
+   * Account model stores OAuth provider accounts (Google, Github, etc.)
+   * Each row links a User to a provider
+   */
 
 model Account {
   id                       String  @id @default(cuid())
@@ -36,6 +45,11 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+  /**
+   * Session model stores active login sessions
+   * Each row = one login (e.g., laptop + phone = 2 sessions)
+   */
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -44,6 +58,10 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+  /**
+   * VerificationToken model stores tokens for email-based logins (magic links)
+   */
+
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -51,6 +69,11 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+  /**
+   * Link model stores short URLs
+   * Each row belongs to a User
+   */
 
 model Link {
   id        String   @id @default(cuid())

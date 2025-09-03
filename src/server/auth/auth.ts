@@ -22,14 +22,17 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        // find user by email
         const user = await db.user.findUnique({
           where: { email: credentials.email },
         });
 
+        // no user with that email
         if (!user || !user.password) {
           return null;
         }
 
+        // check if password is correct
         const isValid = await bcrypt.compare(
           String(credentials.password),
           user.password,
